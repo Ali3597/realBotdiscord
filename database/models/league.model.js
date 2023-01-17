@@ -10,7 +10,7 @@ const leagueSchema = schema({
     startinGrant:{ type: Number, required:true },
     participants : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
     admins : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
-    currencyShops : [{ type: schema.Types.ObjectId, ref: "currencyShop", required: true }],
+    banks : [{ type: schema.Types.ObjectId, ref: "bank", required: true }],
 });
 
 

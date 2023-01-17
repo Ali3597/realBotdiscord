@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
-const currencyShopSchema = schema({
+const bankSchema = schema({
     interestRate:  { type: Number, required: true },
     maxAmount: { type: Number, required: true },
     daysMax : { type: Number, required: true },
@@ -11,6 +11,6 @@ const currencyShopSchema = schema({
 
 
 
-const currencyShop = mongoose.model("currencyShop", currencyShopSchema);
+const Bank = mongoose.model("bank", bankSchema);
 
-module.exports = currencyShop;
+module.exports = Bank;
