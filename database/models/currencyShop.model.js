@@ -2,8 +2,11 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const currencyShopSchema = schema({
-    guildId : { type: String, required: true },
+    rate:  { type: Number, required: true },
+    maxAmount: { type: Number, required: true },
+    daysMax : { type: Number, required: true },
     debts: [{ type: schema.Types.ObjectId, ref: "debt" }],
+    ligue: { type: schema.Types.ObjectId, ref: "ligue" },
 });
 
 

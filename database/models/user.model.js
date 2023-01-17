@@ -3,8 +3,11 @@ const schema = mongoose.Schema;
 
 const userSchema = schema({
     userId :  { type: String, required: true },
-    amount : { type: Number, default: 0 },
-    debts: [{ type: mongoose.Types.ObjectId, ref: 'debt' }]
+    leagues: [{
+       league: { type: mongoose.Types.ObjectId, ref: 'league' },
+       debts: [{ type: mongoose.Types.ObjectId, ref: 'debt' }],
+       amount : { type: Number, default: 0 },
+}]
 });
 
 
