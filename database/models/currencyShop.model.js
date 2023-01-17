@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const currencyShopSchema = schema({
-    rate:  { type: Number, required: true },
+    interestRate:  { type: Number, required: true },
     maxAmount: { type: Number, required: true },
     daysMax : { type: Number, required: true },
     debts: [{ type: schema.Types.ObjectId, ref: "debt" }],
-    ligue: { type: schema.Types.ObjectId, ref: "ligue" },
+    league: { type: schema.Types.ObjectId, ref: "league" },
 });
 
 
