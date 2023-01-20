@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const leagueSchema = schema({
+    name:{ type: String, required: true },
     created_at: { type: Date, required: true },
     created_by : { type: schema.Types.ObjectId, ref: "user", required: true },
     guildId: { type: String, required: true },
@@ -10,7 +11,7 @@ const leagueSchema = schema({
     startinGrant:{ type: Number, required:true },
     participants : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
     admins : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
-    banks : [{ type: schema.Types.ObjectId, ref: "bank", required: true }],
+    banks : { type: schema.Types.ObjectId, ref: "bank", required: true },
 });
 
 
