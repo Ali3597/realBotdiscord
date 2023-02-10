@@ -1,4 +1,5 @@
 const { SlashCommandBuilder,ActionRowBuilder,ModalBuilder,TextInputBuilder,TextInputStyle } = require('discord.js');
+const {createLeague} = require("../../queries/league.queries")
 
 const modal = new ModalBuilder()
 			.setCustomId('myModal')
@@ -6,16 +7,46 @@ const modal = new ModalBuilder()
 
 
 
-const favoriteColorInput = new TextInputBuilder()
-			.setCustomId('favoriteColorInput')
+const maxAmount = new TextInputBuilder()
+            .setPlaceholder("10000")
+            .setRequired(true)
+			.setCustomId('maxAmount')
 		    // The label is the prompt the user sees for this input
-			.setLabel("What's your favorite color?")
+			.setLabel("Maximum amount you can borrow")
 		    // Short means only a single line of text
 			.setStyle(TextInputStyle.Short);
 
 
-const firstActionRow = new ActionRowBuilder().addComponents(favoriteColorInput);
-modal.addComponents(firstActionRow);
+const maxDays = new TextInputBuilder()
+            .setValue("30")
+            .setRequired(true)
+			.setCustomId('maxDays')
+		    // The label is the prompt the user sees for this input
+			.setLabel("Maximum number of days for a loan")
+		    // Short means only a single line of text
+			.setStyle(TextInputStyle.Short);
+
+
+const rate = new TextInputBuilder()
+            .setValue("15")
+            .setRequired(true)
+			.setCustomId('rate')
+		    // The label is the prompt the user sees for this input
+			.setLabel("What is the reimbursement rate ?")
+		    // Short means only a single line of text
+			.setStyle(TextInputStyle.Short);
+
+
+//   - Leur nombre maximum d'emprunt
+//   - daysMax
+//   - Pourcentage d'interet
+
+
+const firstActionRow = new ActionRowBuilder().addComponents(maxAmount);
+const secondActionRow = new ActionRowBuilder().addComponents(maxDays);
+const thirddActionRow = new ActionRowBuilder().addComponents(rate);
+
+modal.addComponents(firstActionRow,secondActionRow,thirddActionRow);
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -24,11 +55,6 @@ module.exports = {
         .addStringOption(option =>
             option.setName('leaguename')
                 .setDescription('The league name ')
-                .setRequired(true)
-                )
-        .addIntegerOption(option =>
-            option.setName('nbmaxmembers')
-                .setDescription('The max member s league ')
                 .setRequired(true)
                 )
         .addIntegerOption(option =>
@@ -45,15 +71,25 @@ module.exports = {
                             option.setName('bank')
                                 .setDescription('decides if the league have a bank to make some loans')
                                 .setRequired(true)
-                            ),
+                            )
+        .addIntegerOption(option =>
+                                option.setName('nbmaxmembers')
+                                    .setDescription('The max member s league ')
+                                    ),
             
 	async execute(interaction) {
+        let error= false
+        let messageError = ""
 		const name = interaction.options.getString('leaguename') ;
         const nbMaxNumbers = interaction.options.getInteger('nbmaxmembers') ;
         const startingGrant = interaction.options.getInteger('startinggrant')
         const open = interaction.options.getBoolean('open') ;
         const bank = interaction.options.getBoolean('bank')
-        if (bank){
+        let subMaxAmount = null
+        let  subMaxDays = null
+        let subRate = null
+        if (bank)
+        {
             await interaction.showModal(modal);
 
             // Get the Modal Submit Interaction that is emitted once the User submits the Modal
@@ -67,29 +103,48 @@ module.exports = {
             console.error(error)
             return null
             })
-
             if (submitted) {
-            console.log("voliiiiaiaiaiaiai",submitted.fields.getTextInputValue('favoriteColorInput'))
+            subMaxAmount = submitted.fields.getTextInputValue('maxAmount')
+            subMaxDays =submitted.fields.getTextInputValue('maxDays')
+            subRate = submitted.fields.getTextInputValue('rate')
+            if (!(parseInt(subMaxAmount) && parseInt(subMaxDays) && parseInt(subRate))){
+                error = true
+                messageError = "The max member s league , Maximum amount you can borrow and Maximum number of days for a loan must be integer "
+            } 
         }
         await submitted.deferUpdate()
     }
+    if (error){
+        await interaction.followUp('We have not been able to create your league for the following reason:  '+ messageError);
+    }else{
+        league = {
+            name,
+            created_at: Date.now(),
+            created_by:"ali",
+            
+        }
         console.log("voila mes inputs",name,nbMaxNumbers,startingGrant,open,bank)
         await interaction.followUp('testons ça ');
+    }
 	},
 };
-// name 
-// - nbMaxMembers:
-// - Sport categorie a choisir ( //todo)
-// - utilisateurs admin
-// - Les différentes banques disponibles :
-//   - Leur nombre maximum d'emprunt
-//   - daysMax
-//   - Pourcentage d'interet
-// startinGrant
-// - Date de fin
-// - Boolean open
+
+// name:{ type: String, required: true },
+// created_at: { type: Date, required: true },
+// created_by : { type: schema.Types.ObjectId, ref: "user", required: true },
+// guildId: { type: String, required: true },
+// closed_at:{ type: Date, default:null },
+// nbMaxMembers: { type: Number, default: null },
+// startinGrant:{ type: Number, required:true },
+// participants : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
+// admins : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
+// banks : { type: schema.Types.ObjectId, ref: "bank", required: true },
 
 
-// interestRate:  { type: Number, required: true },
-// maxAmount: { type: Number, required: true },
-// daysMax : { type: Number, required: true },
+// const bankSchema = schema({
+//     interestRate:  { type: Number, required: true },
+//     maxAmount: { type: Number, required: true },
+//     daysMax : { type: Number, required: true },
+//     debts: [{ type: schema.Types.ObjectId, ref: "debt" }],
+//     league: { type: schema.Types.ObjectId, ref: "league" },
+// });
