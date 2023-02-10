@@ -1,12 +1,12 @@
 
-const {findUserByUserId,createUser} = require("../queries/user.queries")
+const {findUserByDiscordId,createUser} = require("../queries/user.queries")
 
 
 
-exports.isThisUserRegisteredIfNotRegister= async (userId) => {
-    let  user = await findUserByUserId(userId)
+exports.isThisUserRegisteredIfNotRegister= async (discordId) => {
+    let  user = await findUserByDiscordId(discordId)
     if(!user){
-       user  = await  createUser(userId)
+       user  = await  createUser(discordId)
     }
     return user 
 }

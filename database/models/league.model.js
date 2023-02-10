@@ -8,10 +8,11 @@ const leagueSchema = schema({
     guildId: { type: String, required: true },
     closed_at:{ type: Date, default:null },
     nbMaxMembers: { type: Number, default: null },
-    startinGrant:{ type: Number, required:true },
+    startingGrant:{ type: Number, required:true },
     participants : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
     admins : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
     bank : { type: schema.Types.ObjectId, ref: "bank", default: null},
+    debts: [{ type: schema.Types.ObjectId, ref: "debt" }],
 });
 
 

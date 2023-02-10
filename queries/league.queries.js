@@ -15,6 +15,6 @@ exports.createLeague = async (league,bank= null) => {
      await newLeague.save()
 }
 return newLeague
-  };
+};
 
   

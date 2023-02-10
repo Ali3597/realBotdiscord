@@ -1,6 +1,7 @@
 const { SlashCommandBuilder,ActionRowBuilder,ModalBuilder,TextInputBuilder,TextInputStyle } = require('discord.js');
 const {createLeague} = require("../../queries/league.queries")
 const {isThisUserRegisteredIfNotRegister} = require("../../utils/user.utils")
+const {addLeagueToUser} = require("../../queries/user.queries")
 
 const modal = new ModalBuilder()
 			.setCustomId('myModal')
@@ -81,7 +82,7 @@ module.exports = {
 	async execute(interaction) {
         let error= false
         let messageError = ""
-        let userId = interaction.user.id
+        let discordUserId = interaction.user.id
 		const name = interaction.options.getString('leaguename') ;
         const nbMaxNumbers = interaction.options.getInteger('nbmaxmembers') ;
         const startingGrant = interaction.options.getInteger('startinggrant')
@@ -117,31 +118,40 @@ module.exports = {
         await submitted.deferUpdate()
     }
     if (error){
-        await interaction.followUp('We have not been able to create your league for the following reason:  '+ messageError);
+        await interaction.reply('We have not been able to create your league for the following reason:  '+ messageError);
     }else{
-        const userCommand = await  isThisUserRegisteredIfNotRegister(userId)
+        const userCommand = await  isThisUserRegisteredIfNotRegister(discordUserId)
+        let newBank = null
         if (bank){
-            const newBank = {
+             newBank = {
                 interestRate:subRate,
                 maxAmount: subMaxAmount,
                 daysMax:subMaxDays,
-                debts: []
             }
         }else{
-            newBank = null
+             newBank = null
         }
-        newLeague = {
+        const userId =  userCommand.id
+        const newLeague = {
             name,
             created_at: Date.now(),
-            created_by:user,
+            created_by:userCommand,
             guildId :interaction.guild.id,
             nbMaxNumbers,
             startingGrant,
-            participants : [{user}],
-            admins: [{user}],
+            participants : [userId],
+            admins: [userId],
         }
-        await createLeague(newLeague,bank)
-        await interaction.followUp('testons ça ');
+        const createdLeague = await createLeague(newLeague,newBank)
+        addLeagueToUser(newLeague,userCommand)
+        console.log("je suis mla la league crééeeerrrrrrr",createdLeague)
+        message = "Votre league  "+ createLeague.name+ " a été crée"
+        if (bank){
+            await interaction.followUp("Votre league  "+ createLeague.name+ " a été crée");
+        }else {
+            await interaction.reply("Votre league  "+ createLeague.name+ " a été crée");
+        }
+        
     }
 	},
 };

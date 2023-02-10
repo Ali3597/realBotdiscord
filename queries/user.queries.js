@@ -1,25 +1,25 @@
 const User = require("../database/models/user.model")
 
 
-exports.findUserByUserId =  (userId) => {
-return User.findOne({ userId: userId }).exec();
+exports.findUserByDiscordId =  (discordId) => {
+return User.findOne({ discordId: discordId }).exec();
   };
 
 
 
-  exports.createUser =  (userId) => {
+  exports.createUser =  (discordId) => {
         const newUser = new User({
-            userId 
+            discordId
         })
         return newUser.save()
       };
 
 
-exports.addLeagueToUSer= (league,amount,user) => {
+exports.addLeagueToUser= (league,user) => {
     leagueUser = {
         league,
         debts:[],
-        amount
+        amount: league.startingGrant
     }
        
     User.updateOne(

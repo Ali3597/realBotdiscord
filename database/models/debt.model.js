@@ -7,7 +7,7 @@ const debtSchema = schema({
     deadline: { type: Date, required: true },
     done: { type: Boolean, default: false },
     user : { type: schema.Types.ObjectId, ref: "user", required: true },
-    bank : { type: schema.Types.ObjectId, ref: "bank", required: true },
+    league : { type: schema.Types.ObjectId, ref: "league", required: true },
 });
 
 

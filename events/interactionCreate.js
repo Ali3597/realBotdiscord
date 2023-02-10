@@ -11,11 +11,13 @@ module.exports = {
 			return;
 		}
 
-		try {
+		// try {
+			console.log("ojn execute")
 			await command.execute(interaction);
-		} catch (error) {l
-			console.error(`Error executing ${interaction.commandName}`);
-			console.error(error);
-		}
+			console.log("pas dexecution")
+		// } catch (error) {l
+		// 	console.error(`Error executing ${interaction.commandName}`);
+		// 	console.error(error);
+		// }
 	},
 };
