@@ -84,7 +84,7 @@ module.exports = {
         let messageError = ""
         let discordUserId = interaction.user.id
 		const name = interaction.options.getString('leaguename') ;
-        const nbMaxNumbers = interaction.options.getInteger('nbmaxmembers') ;
+        const nbMaxMembers = interaction.options.getInteger('nbmaxmembers') ;
         const startingGrant = interaction.options.getInteger('startinggrant')
         const open = interaction.options.getBoolean('open') ;
         const bank = interaction.options.getBoolean('bank')
@@ -137,7 +137,7 @@ module.exports = {
             created_at: Date.now(),
             created_by:userCommand,
             guildId :interaction.guild.id,
-            nbMaxNumbers,
+            nbMaxMembers,
             startingGrant,
             participants : [userId],
             admins: [userId],
@@ -147,9 +147,9 @@ module.exports = {
         console.log("je suis mla la league crééeeerrrrrrr",createdLeague)
         message = "Votre league  "+ createLeague.name+ " a été crée"
         if (bank){
-            await interaction.followUp("Votre league  "+ createLeague.name+ " a été crée");
+            await interaction.followUp("Votre league  "+ createdLeague.name+ " a été crée");
         }else {
-            await interaction.reply("Votre league  "+ createLeague.name+ " a été crée");
+            await interaction.reply("Votre league  "+ createdLeague.name+ " a été crée");
         }
         
     }
