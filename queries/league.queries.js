@@ -3,17 +3,18 @@ const Bank = require("../database/models/bank.model")
 
 
 exports.createLeague = async (league,bank= null) => {
-    if (bank){
-        const newBank = new Bank({
-            ...bank
-        })
-        bank = await newBank.save()
-    }
-    const newLeague = new League({
+    const newLeague = await  new League({
         ...league,
-        bank : bank
-    })
-    return newLeague.save()
+    }).save()
+    if (bank){
+    const newBank = await  new Bank({
+        ...bank,
+        league : newLeague
+    }).save()
+    newLeague.bank = newBank
+     await newLeague.save()
+}
+return newLeague
   };
 
   

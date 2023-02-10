@@ -1,5 +1,6 @@
 const { SlashCommandBuilder,ActionRowBuilder,ModalBuilder,TextInputBuilder,TextInputStyle } = require('discord.js');
 const {createLeague} = require("../../queries/league.queries")
+const {isThisUserRegisteredIfNotRegister} = require("../../utils/user.utils")
 
 const modal = new ModalBuilder()
 			.setCustomId('myModal')
@@ -80,6 +81,7 @@ module.exports = {
 	async execute(interaction) {
         let error= false
         let messageError = ""
+        let userId = interaction.user.id
 		const name = interaction.options.getString('leaguename') ;
         const nbMaxNumbers = interaction.options.getInteger('nbmaxmembers') ;
         const startingGrant = interaction.options.getInteger('startinggrant')
@@ -117,34 +119,30 @@ module.exports = {
     if (error){
         await interaction.followUp('We have not been able to create your league for the following reason:  '+ messageError);
     }else{
-        league = {
+        const userCommand = await  isThisUserRegisteredIfNotRegister(userId)
+        if (bank){
+            const newBank = {
+                interestRate:subRate,
+                maxAmount: subMaxAmount,
+                daysMax:subMaxDays,
+                debts: []
+            }
+        }else{
+            newBank = null
+        }
+        newLeague = {
             name,
             created_at: Date.now(),
-            created_by:"ali",
-            
+            created_by:user,
+            guildId :interaction.guild.id,
+            nbMaxNumbers,
+            startingGrant,
+            participants : [{user}],
+            admins: [{user}],
         }
-        console.log("voila mes inputs",name,nbMaxNumbers,startingGrant,open,bank)
+        await createLeague(newLeague,bank)
         await interaction.followUp('testons ça ');
     }
 	},
 };
 
-// name:{ type: String, required: true },
-// created_at: { type: Date, required: true },
-// created_by : { type: schema.Types.ObjectId, ref: "user", required: true },
-// guildId: { type: String, required: true },
-// closed_at:{ type: Date, default:null },
-// nbMaxMembers: { type: Number, default: null },
-// startinGrant:{ type: Number, required:true },
-// participants : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
-// admins : [{ type: schema.Types.ObjectId, ref: "user", required: true }],
-// banks : { type: schema.Types.ObjectId, ref: "bank", required: true },
-
-
-// const bankSchema = schema({
-//     interestRate:  { type: Number, required: true },
-//     maxAmount: { type: Number, required: true },
-//     daysMax : { type: Number, required: true },
-//     debts: [{ type: schema.Types.ObjectId, ref: "debt" }],
-//     league: { type: schema.Types.ObjectId, ref: "league" },
-// });

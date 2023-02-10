@@ -14,3 +14,4 @@ const bankSchema = schema({
 const Bank = mongoose.model("bank", bankSchema);
 
 module.exports = Bank;
+             
