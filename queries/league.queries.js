@@ -1,6 +1,6 @@
 const League = require("../database/models/league.model")
 const Bank = require("../database/models/bank.model")
-
+const mongoose = require("mongoose");
 
 exports.createLeague = async (league,bank= null) => {
     const newLeague = await  new League({
@@ -17,4 +17,11 @@ exports.createLeague = async (league,bank= null) => {
 return newLeague
 };
 
-  
+
+
+
+
+exports.findLeaguesByDiscordIdAndGuildId = async (userId,guildId) => {
+    return await League.find({ participants:  userId, guildId: guildId }).exec()
+}
+mongoose.Types.ObjectId('4ed3ede8844f0f351100000c')
